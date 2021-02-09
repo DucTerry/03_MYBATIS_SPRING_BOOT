@@ -1,6 +1,7 @@
 package com.ndangduc.bn.mybatisspringboot.controller.rest;
 
 import com.ndangduc.bn.mybatisspringboot.controller.dto.req.CreateStudent;
+import com.ndangduc.bn.mybatisspringboot.controller.dto.req.StudentIdReq;
 import com.ndangduc.bn.mybatisspringboot.controller.dto.res.ResponseObject;
 import com.ndangduc.bn.mybatisspringboot.controller.dto.res.StudentDTO;
 import com.ndangduc.bn.mybatisspringboot.dao.service.StudentService;
@@ -36,6 +37,14 @@ public class StudentController {
         LOGGER.info(PREFIX_LOG+ "addStudent", JSONFactory.toString(request));
 
         ResponseObject<StudentDTO> res = this.studentService.addStudent(request);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @PostMapping("/detail-student")
+    public ResponseEntity<ResponseObject<StudentDTO>> detailStudent(@Valid @RequestBody StudentIdReq request){
+        LOGGER.info(PREFIX_LOG+ "addStudent", JSONFactory.toString(request));
+
+        ResponseObject<StudentDTO> res = this.studentService.detailStudent(request);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }
