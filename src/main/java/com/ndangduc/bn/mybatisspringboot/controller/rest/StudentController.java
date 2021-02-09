@@ -1,7 +1,9 @@
 package com.ndangduc.bn.mybatisspringboot.controller.rest;
 
 import com.ndangduc.bn.mybatisspringboot.controller.dto.req.CreateStudent;
+import com.ndangduc.bn.mybatisspringboot.controller.dto.req.QueryStudentReq;
 import com.ndangduc.bn.mybatisspringboot.controller.dto.req.StudentIdReq;
+import com.ndangduc.bn.mybatisspringboot.controller.dto.req.UpdateStudent;
 import com.ndangduc.bn.mybatisspringboot.controller.dto.res.ResponseObject;
 import com.ndangduc.bn.mybatisspringboot.controller.dto.res.StudentDTO;
 import com.ndangduc.bn.mybatisspringboot.dao.service.StudentService;
@@ -13,12 +15,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/ducnd/student")
@@ -42,9 +42,26 @@ public class StudentController {
 
     @PostMapping("/detail-student")
     public ResponseEntity<ResponseObject<StudentDTO>> detailStudent(@Valid @RequestBody StudentIdReq request){
-        LOGGER.info(PREFIX_LOG+ "addStudent", JSONFactory.toString(request));
+        LOGGER.info(PREFIX_LOG+ "detailStudent", JSONFactory.toString(request));
 
         ResponseObject<StudentDTO> res = this.studentService.detailStudent(request);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @PostMapping("/update-student")
+    public ResponseEntity<ResponseObject<StudentDTO>> updateStudent(@Valid @RequestBody UpdateStudent request){
+        LOGGER.info(PREFIX_LOG+ "updateStudent", JSONFactory.toString(request));
+
+        ResponseObject<StudentDTO> res = this.studentService.updateStudent(request);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping("/list-student")
+    public ResponseEntity<ResponseObject<List<StudentDTO>>> listStudent(){
+        LOGGER.info(PREFIX_LOG+ "listStudent");
+
+        ResponseObject<List<StudentDTO>> res = this.studentService.listStudent();
+
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }

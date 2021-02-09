@@ -1,7 +1,9 @@
 package com.ndangduc.bn.mybatisspringboot.dao.service.impl;
 
 import com.ndangduc.bn.mybatisspringboot.controller.dto.req.CreateStudent;
+import com.ndangduc.bn.mybatisspringboot.controller.dto.req.QueryStudentReq;
 import com.ndangduc.bn.mybatisspringboot.controller.dto.req.StudentIdReq;
+import com.ndangduc.bn.mybatisspringboot.controller.dto.req.UpdateStudent;
 import com.ndangduc.bn.mybatisspringboot.controller.dto.res.ResponseObject;
 import com.ndangduc.bn.mybatisspringboot.controller.dto.res.StudentDTO;
 import com.ndangduc.bn.mybatisspringboot.dao.entity.Student;
@@ -17,6 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -66,6 +70,53 @@ public class StudentServiceImpl implements StudentService {
             }
 
             StudentDTO res = this.studentSupport.toStudentDTO(studentCurrent);
+
+            return new ResponseObject<>(true, EnumResponse.DO_SUCESS.getResponse(), res);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseObject<>(false, EnumResponse.UN_ERROR.getResponse());
+        }
+    }
+
+    @Override
+    public ResponseObject<StudentDTO> updateStudent(UpdateStudent request) {
+        try {
+            LOGGER.info(PREFIX_LOG+"updateStudent {}", JSONFactory.toString(request));
+
+            // 01. Find Student
+            Student studentCurrent = this.studentMapper.detailStudent(request.getStudentId()).orElse(null);
+
+            // 02. Validation
+            if (studentCurrent ==null){
+                throw new StudentException(EnumResponse.STUDENT_NOT_FOUND);
+            }
+
+            // 03. Update Student
+            request.toEntity(studentCurrent);
+
+            // 04. Cập nhật
+            this.studentMapper.updateStudent(studentCurrent);
+
+            // 05. Convert Entity -> DTO
+            StudentDTO res = this.studentSupport.toStudentDTO(studentCurrent);
+
+            return new ResponseObject<>(true, EnumResponse.DO_SUCESS.getResponse(), res);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseObject<>(false, EnumResponse.UN_ERROR.getResponse());
+        }
+    }
+
+    @Override
+    public ResponseObject<List<StudentDTO>> listStudent() {
+        try {
+            LOGGER.info(PREFIX_LOG+"updateStudent {}");
+
+            // 01. Lấy danh sách
+            List<Student> studentGroup = this.studentMapper.listStudent();
+
+            // 05. Convert Entity -> DTO
+            List<StudentDTO> res = this.studentSupport.toListStudentDTO(studentGroup);
 
             return new ResponseObject<>(true, EnumResponse.DO_SUCESS.getResponse(), res);
         } catch (Exception e) {
